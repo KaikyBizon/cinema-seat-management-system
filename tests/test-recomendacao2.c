@@ -20,7 +20,6 @@ int main()
       {0, 0, 0, 0, 0, 0, 0, 0},
   };
 
-  // çskw´ke´p
   int res_qtd, res_lim;
   // Cada fileira tem certo número de sequências contínuas de assentos
   // Cada sequência é definida por seu ponto inicial (inclusivo)
