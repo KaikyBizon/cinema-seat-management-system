@@ -11,7 +11,7 @@ int main()
       {1, 0, 1, 0, 1, 0, 1, 0},
       {0, 0, 0, 0, 0, 0, 0, 0},
       {0, 0, 0, 0, 0, 0, 0, 0},
-      {0, 0, 0, 0, 0, 0, 0, 0},
+      {1, 1, 1, 0, 0, 0, 0, 0},
       {1, 1, 1, 1, 1, 1, 1, 1},
       {0, 0, 0, 1, 1, 1, 1, 1},
       {0, 0, 0, 1, 1, 1, 0, 0},
@@ -22,6 +22,7 @@ int main()
   int res_qtd, res_fil, res_resto, res_lim;
   int lvl_liv[LIN][2] = {0}, liv_fil[LIN][COL], tmp;
   int seq[LIN][SEQ][2] = {0}, seq_idx, skip;
+  int score[LIN] = {0}, ord_idx;
 
   // Teste
   // Quantos assentos reservados?
@@ -56,7 +57,7 @@ int main()
     skip = 0;
     seq_idx = 0;
 
-    for (int j = 0, y; j < COL; j++) {
+    for (int j = 0, y, idx = 0; j < COL; j++) {
       // Analisar assentos do centro para fora
       if (j % 2 == 0) {
         y = (COL + j) / 2;
@@ -67,6 +68,7 @@ int main()
       // Contar número de assentos livres
       lvl_liv[i][1] -= seats[x][j];
 
+      // Sequência de assentos livres
       if (seats[i][j] == 0) {
         if (skip == 0) {
           seq[i][seq_idx][0] = j;
@@ -81,9 +83,10 @@ int main()
       }
 
       // Se o assento analisado estiver livre, incluir o índice à matriz
-      liv_fil[i][j] = -1;
+      // liv_fil[i][j] = -1;
       if (seats[i][y] == 0) {
-        liv_fil[i][j] = y;
+        liv_fil[i][idx] = y;
+        idx++;
       }
 
       printf("%d ", seats[i][j]);
@@ -92,38 +95,77 @@ int main()
   }
 
   // Organizar fileiras em ordem decrescente de assentos livres
-  // Se houver assentos livres suficientes na fileira, ignorar
-  // (a fileira ainda é elegível)
+  // Priorizar fileiras com sequência contínua de assentos livres
+  // maior ou igual ao número de assentos reservados
   for (int i = 0; i < LIN - 1; i++) {
     for (int j = i + 1; j < LIN; j++) {
-      if (lvl_liv[i][1] < lvl_liv[j][1] && lvl_liv[i][1] < res_lim) {
-        for (int k = 0; k < 2; k++) {
-          tmp = lvl_liv[i][k];
-          lvl_liv[i][k] = lvl_liv[j][k];
-          lvl_liv[j][k] = tmp;
+      if (lvl_liv[i][1] < res_lim) {
+        if (lvl_liv[i][1] < lvl_liv[j][1]) {
+          for (int k = 0; k < 2; k++) {
+            tmp = lvl_liv[i][k];
+            lvl_liv[i][k] = lvl_liv[j][k];
+            lvl_liv[j][k] = tmp;
+          }
+        }
+      } else {
+        for (int k = 0; k < SEQ; k++) {
+          if (seq[lvl_liv[i][0]][k][1] == 0) {
+            break;
+          }
+          if (seq[lvl_liv[i][0]][k][1] - seq[lvl_liv[i][0]][k][0] < res_lim) {
+            for (int l = 0; l < 2; l++) {
+              tmp = lvl_liv[i][l];
+              lvl_liv[i][l] = lvl_liv[j][l];
+              lvl_liv[j][l] = tmp;
+            }
+          }
         }
       }
+    }
+  }
+
+  ord_idx = lvl_liv[0][0];
+  for (int i = 0; i < LIN; i++) {
+    score[lvl_liv[i][0]] = 0;
+    for (int j = 0; j < lvl_liv[i][1]; j++) {
+      if (j == res_lim) {
+        break;
+      }
+      score[lvl_liv[i][0]] += (COL - liv_fil[lvl_liv[i][0]][j]) * (liv_fil[lvl_liv[i][0]][j] + 1);
+    }
+    if (score[lvl_liv[i][0]] > score[ord_idx]) {
+      ord_idx = lvl_liv[i][0];
     }
   }
 
   // Teste
   for (int i = 0; i < LIN; i++) {
     printf("Fileira %d: %d livres - ", lvl_liv[i][0], lvl_liv[i][1]);
-    for (int j = 0; j < COL; j++) {
-      if (liv_fil[lvl_liv[i][0]][j] != -1) {
-        printf("%d ", liv_fil[lvl_liv[i][0]][j]);
-      }
+    for (int j = 0; j < lvl_liv[i][1]; j++) {
+      printf("%d ", liv_fil[lvl_liv[i][0]][j]);
     }
     printf("\n");
 
-    tmp = 0;
-    do {
+    for (int j = 0; j < SEQ; j++) {
+      if (seq[lvl_liv[i][0]][j][1] == 0) {
+        break;
+      }
       printf("[%d, %d[ ", seq[lvl_liv[i][0]][tmp][0], seq[lvl_liv[i][0]][tmp][1]);
-      tmp++;
-    } while (tmp < SEQ && seq[lvl_liv[i][0]][tmp][1] != 0);
+    }
 
     printf("\n\n");
   }
+
+  // for (int i = 0; i < LIN; i++) {
+  //   printf("%d ", score[i]);
+  // }
+  // printf("\n");
+  
+  for (int i = 0; i < res_lim; i++) {
+    printf("(%d, %d) ", ord_idx, liv_fil[ord_idx][i]);
+  }
+  printf("\n");
+
 
   return 0;
 }
