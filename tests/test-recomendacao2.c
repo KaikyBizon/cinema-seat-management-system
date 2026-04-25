@@ -9,16 +9,27 @@ int main()
 {
   int seats[LIN][COL] = {
       {1, 0, 1, 0, 1, 0, 1, 0},
-      {0, 0, 0, 0, 0, 0, 0, 0},
-      {0, 0, 0, 0, 0, 0, 0, 0},
-      {1, 1, 1, 0, 0, 0, 0, 0},
+      {0, 0, 0, 0, 1, 0, 0, 0},
+      {0, 0, 0, 1, 0, 0, 0, 0},
+      {1, 1, 1, 0, 0, 1, 0, 0},
       {1, 1, 1, 1, 1, 1, 1, 1},
       {0, 0, 0, 1, 1, 1, 1, 1},
       {0, 0, 0, 1, 1, 1, 0, 0},
-      {0, 0, 0, 0, 0, 0, 0, 0},
-      {0, 0, 0, 0, 0, 0, 0, 0},
-      {0, 0, 0, 0, 0, 0, 0, 0},
+      {0, 0, 0, 0, 1, 0, 0, 0},
+      {0, 0, 0, 1, 0, 0, 0, 0},
+      {0, 0, 0, 0, 1, 0, 0, 0},
   };
+
+    // {1, 0, 1, 0, 1, 0, 1, 0},
+    // {1, 0, 1, 0, 1, 0, 1, 0},
+    // {1, 0, 1, 0, 1, 0, 1, 0},
+    // {1, 0, 1, 0, 1, 0, 1, 0},
+    // {1, 0, 1, 0, 1, 0, 1, 0},
+    // {1, 0, 1, 0, 1, 0, 1, 0},
+    // {1, 0, 1, 0, 1, 0, 1, 0},
+    // {1, 0, 1, 0, 1, 0, 1, 0},
+    // {1, 0, 1, 0, 1, 0, 1, 0},
+    // {1, 0, 1, 0, 1, 0, 1, 0},
 
   int res_qtd, res_lim;
   // Cada fileira tem certo número de sequências contínuas de assentos
@@ -124,21 +135,22 @@ int main()
 
   // Descobrir qual a maior pontuação
   // Registrar os assentos da sequência
-  for (int i = 0, x; i < res_lim; i++) {
-    if (i % 2 == 0) {
-      x = (COL + i) / 2;
-    } else {
-      x = (COL - i - 1) / 2;
-    }
-    
-    if (seq[seq_coord[0]][seq_coord[1]][0] < x && x < seq[seq_coord[0]][seq_coord[1]][1]) {
-      recom[i] = x;
-      recom_qtd++;
+  if (seq[seq_coord[0]][seq_coord[1]][1] - seq[seq_coord[0]][seq_coord[1]][0] >= res_lim) {
+    for (int i = 0, x; i < res_lim; i++) {
+      if (i % 2 == 0) {
+        x = (COL + i) / 2;
+      } else {
+        x = (COL - i - 1) / 2;
+      }
+
+      if (seq[seq_coord[0]][seq_coord[1]][0] < x && x < seq[seq_coord[0]][seq_coord[1]][1]) {
+        recom[i] = x;
+        recom_qtd++;
+      }
     }
   }
 
   res_qtd -= recom_qtd;
-
   // TESTE
   // Impressão dos dados
   printf("\n");
