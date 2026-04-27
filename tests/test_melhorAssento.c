@@ -141,7 +141,7 @@ int main()
                             for (u = 0; u < alocados; u++) {
 
                                 // tenta colar na fileira de tras (+1) ou da frente (-1) dos amigos
-                                for (d = 1; d < ingressos; d++) {
+                                for (d = 1; d <= r; d++) {
                                     if (d % 2 == 0) {
                                         dir = d / 2;
                                     } else {
