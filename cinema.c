@@ -615,10 +615,6 @@ int main() {
                     // quem sobrou da divisao e precisa de um assento extra
                     resto = grupos[s] % r;
 
-<<<<<<< HEAD
-                      if (base > COL) {
-                        continue;
-=======
                     if (base > COL) {
                       continue;
                     }
@@ -641,7 +637,6 @@ int main() {
                         f1 = (LIN + i) / 2;
                       } else {
                         f1 = (LIN - i) / 2;
->>>>>>> e906962 (Modificação na armazenagem de assentos do usr e proteção contra chars)
                       }
 
                       // desliza pela fileira testando as colunas
