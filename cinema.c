@@ -654,7 +654,7 @@ int main() {
                       // quem sobrou da divisao e precisa de um assento extra
                       resto = grupos[s] % r;
 
-                      if (base > 8) {
+                      if (base > COL) {
                         continue;
                       }
 
