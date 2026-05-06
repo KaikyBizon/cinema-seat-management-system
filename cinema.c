@@ -65,7 +65,7 @@ int main() {
   int livres_vizinho;
   int achou_g;
   int sum_tam;
-  int canto;
+  int borda;
   int solo;
 
   system("cls");
@@ -555,7 +555,7 @@ int main() {
               printf("\nBuscando lugares...\n\n");
 
               for (solo = 0; solo < 3; solo++) {
-                for (canto = 0; canto < 2; canto++) {
+                for (borda = 0; borda < 2; borda++) {
 
                   for (R = 1; R <= ingressos; R++) {
                     sum_tam = 0;
@@ -638,7 +638,7 @@ int main() {
                               }
                             }
 
-                            if (canto == 0 && (c1 + tamanhos[cont_r] == COL || c1 == 0)) {
+                            if (borda == 0 && (c1 + tamanhos[cont_r] == COL || c1 == 0)) {
                               break;
                             }
 
@@ -694,7 +694,7 @@ int main() {
                                             break;
                                         }
 
-                                        if (canto == 0 && (c_teste + tamanhos[cont_r + g] == COL || c_teste == 0)) {
+                                        if (borda == 0 && (c_teste + tamanhos[cont_r + g] == COL || c_teste == 0)) {
                                           break;
                                         }
 
