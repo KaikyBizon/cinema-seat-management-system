@@ -71,7 +71,7 @@ int main() {
 
   system("cls");
 
-  while (acabar != 1) {
+  while (1) {
     do {
       printf("Login/Cadastro: ");
       flag = scanf("%d", &login);
