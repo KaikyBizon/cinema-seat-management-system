@@ -54,7 +54,7 @@
 | Int     | s              | Indica qual grupo está sendo analisado                                          |
 | Int     | r              | Número de divisões do bloco menor                                               |
 | Int     | g              | Contador que indica qual subgrupo está sendo testado                            |
-| Int     | u, v           | Interadores para checar se o assento já está sendo usado                        |
+| Int     | u              | Interador para checar se o assento já foi encontrado                            |
 | Int     | d              | Contador que utilizado para calcular a direção de busca                         |
 | Int     | dir            | Direção da busca da fileira                                                     |
 | Int     | f1             | Fileira do primeiro subgrupo                                                    |
@@ -73,5 +73,5 @@
 | Int     | livres_vizinho | Assentos livres na fileira testada                                              |
 | Int     | cont_r         | Zero relativo na análise de subgrupos                                           |
 | Int     | sum_tam        | Soma dos tamanhos dos subgrupos                                                 |
-| Int     | canto          | Indica se os cantos devem ser contados na análise                               |
+| Int     | borda          | Indica se os cantos devem ser contados na análise                               |
 | Int     | solo           | Indica o grau em que é permitido deixar uma pessoa isolada no meio de estranhos |
