@@ -29,7 +29,6 @@ int main() {
   int pwd;
   int total_usrs = 0;
 
-
   int fil_max[2];
   int fil_min[2];
   int fil_liv[LIN];
@@ -52,7 +51,7 @@ int main() {
   int Resto, resto;
   int s;
   int g;
-  int u, v;
+  int u;
   int usada;
   int d;
   int dir;
@@ -652,10 +651,10 @@ int main() {
                             if (livres == tamanhos[cont_r]) {
                               usada = 0;
                               if (cont_r != 0) {
-                                for (u = 0; u < cont_r + alocados; u++) {
+                                for (u = 0; u < cont_r; u++) {
                                   if (f1 == filas[u]) {
-                                    if ((c1 >= cols[u] && c1 <= cols[u] + tamanhos[u]) ||
-                                        (cols[u] >= c1 && cols[u] <= c1 + tamanhos[cont_r])) {
+                                    if ((c1 >= cols[u] && c1 <= cols[u] + tamanhos[u] - 1) ||
+                                        (cols[u] >= c1 && cols[u] <= c1 + tamanhos[cont_r] - 1)) {
                                       usada = 1;
                                       break;
                                     }
@@ -682,43 +681,55 @@ int main() {
                                     f_teste = filas[cont_r] + dir;
 
                                     if (f_teste >= 0 && f_teste < LIN) {
-                                      usada = 0;
-                                      for (v = 0; v < cont_r + alocados; v++) {
-                                        if (filas[v] == f_teste) {
-                                          usada = 1;
+                                      for (offset = 0; offset < 3; offset++) {
+                                        switch (offset) {
+                                          case 0:
+                                            c_teste = c1;
+                                            break;
+                                          case 1:
+                                            c_teste = c1 + 1;
+                                            break;
+                                          case 2:
+                                            c_teste = c1 - 1;
+                                            break;
                                         }
-                                      }
 
-                                      if (usada == 0) {
-                                        for (offset = 0; offset < 3; offset++) {
-                                          switch (offset) {
-                                            case 0:
-                                              c_teste = c1;
+                                        if (canto == 0 && (c_teste + tamanhos[cont_r + g] == COL || c_teste == 0)) {
+                                          break;
+                                        }
+
+                                        usada = 0;
+                                        for (u = 0; u <= cont_r + alocados; u++) {
+                                          if (f_teste == filas[u]) {
+                                            if ((c_teste >= cols[u] &&
+                                                  c_teste <= cols[u] + tamanhos[u] - 1) ||
+                                                (cols[u] >= c_teste &&
+                                                 cols[u] <= c_teste + tamanhos[cont_r + alocados] - 1)) {
+                                              usada = 1;
                                               break;
-                                            case 1:
-                                              c_teste = c1 + 1;
-                                              break;
-                                            case 2:
-                                              c_teste = c1 - 1;
-                                              break;
+                                            }
+                                          }
+                                        }
+
+                                        if (usada == 1) {
+                                          break;
+                                        }
+
+                                        if (c_teste >= 0 && c_teste <= COL - tamanhos[cont_r + g]) {
+                                          livres_vizinho = 0;
+
+                                          for (k = 0; k < tamanhos[cont_r + g]; k++) {
+                                            if (matriz_cinema[f_teste][c_teste + k] == 0) {
+                                              livres_vizinho++;
+                                            }
                                           }
 
-                                          if (c_teste >= 0 && c_teste <= COL - tamanhos[cont_r + g]) {
-                                            livres_vizinho = 0;
-
-                                            for (k = 0; k < tamanhos[cont_r + g]; k++) {
-                                              if (matriz_cinema[f_teste][c_teste + k] == 0) {
-                                                livres_vizinho++;
-                                              }
-                                            }
-
-                                            if (livres_vizinho == tamanhos[cont_r + g]) {
-                                              filas[cont_r + g] = f_teste;
-                                              cols[cont_r + g] = c_teste;
-                                              alocados++;
-                                              achou_g = 1;
-                                              break;
-                                            }
+                                          if (livres_vizinho == tamanhos[cont_r + g]) {
+                                            filas[cont_r + g] = f_teste;
+                                            cols[cont_r + g] = c_teste;
+                                            alocados++;
+                                            achou_g = 1;
+                                            break;
                                           }
                                         }
                                       }
@@ -729,10 +740,8 @@ int main() {
                                   }
                                   if (achou_g == 0) {
                                     break;
-
                                   }
                                 }
-
                                 if (alocados == r) {
                                   sucesso = 1;
                                   break;
@@ -771,10 +780,18 @@ int main() {
 
               for (i = 0; i < cont_r - 1; i++) {
                 for (j = i + 1; j < cont_r; j++) {
-                  if (filas[i] > filas[j]) {
+                  if ((filas[i] > filas[j]) || (filas[i] == filas[j] && cols[i] > cols[j])) {
                     aux = filas[i];
                     filas[i] = filas[j];
                     filas[j] = aux;
+
+                    aux = cols[i];
+                    cols[i] = cols[j];
+                    cols[j] = aux;
+
+                    aux = tamanhos[i];
+                    tamanhos[i] = tamanhos[j];
+                    tamanhos[j] = aux;
                   }
                 }
               }
@@ -823,11 +840,18 @@ int main() {
               printf("Assentos recomendados (R):\n");
 
               for (i = 0; i < cont_r; i++) {
-                printf("Fileira %d, assentos ", filas[i]);
+                k = 0;
+                if (i == 0 || filas[i] != filas[i - 1]) {
+                  printf("Fileira %d, assentos ", filas[i]);
+                  k = 1;
+                }
                 for (j = 0; j < tamanhos[i]; j++) {
                   printf("%d ", cols[i] + j);
                 }
-                printf("\n");
+
+                if (k == 0) {
+                  printf("\n");
+                }
               }
 
               printf("\nDeseja reservar esses assentos?\n"

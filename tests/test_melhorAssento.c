@@ -3,7 +3,8 @@
 #define LIN 10
 #define COL 8
 #define TOTAL_ASSENTOS (LIN * COL)
-#define MAX_GRUPOS (TOTAL_ASSENTOS / 2) // limite de duplas caso a sala toda seja alugada
+#define MAX_GRUPOS                                                             \
+  (TOTAL_ASSENTOS / 2) // limite de duplas caso a sala toda seja alugada
 
 int main() {
   // matriz da sala de cinema (1 = ocupado, 0 = livre)
@@ -48,11 +49,13 @@ int main() {
   int s;
   int f1;  // fileira onde o primeiro grupo vai tentar sentar
   int c1;  // coluna onde o primeiro grupo vai tentar sentar
-  int dir; // direcao da busca (1 pra olhar a fileira de tras, -1 pra olhar a da frente)
+  int dir; // direcao da busca (1 pra olhar a fileira de tras, -1 pra olhar a da
+           // frente)
   int offset;  // deslocamento pro switch (0 = meio, 1 = direita, 2 = esquerda)
   int f_teste; // fileira que o codigo testa pros amigos que sobraram
   int c_teste; // coluna que o codigo testa pros amigos que sobraram
-  int sucesso = 0;        // avisa o programa se achou lugar pra todo mundo (1) ou nao (0)
+  int sucesso =
+      0;        // avisa o programa se achou lugar pra todo mundo (1) ou nao (0)
   int u, v;     // iteradores auxiliares para checar fileiras vizinhas
   int alocados; // contador de quantos subgrupos ja acharam lugar
   int erro = 0;
@@ -88,7 +91,7 @@ int main() {
   // negativos
   if (ingressos <= 0 || ingressos > total_livre) {
     printf("erro: quantidade invalida. a sala tem %d assentos livres.\n",
-        total_livre);
+           total_livre);
     // return 0; // encerra caso de erro
     erro = 1;
   }
@@ -106,6 +109,11 @@ int main() {
           sum_tam = 0;
 
           Base = ingressos / R;
+
+          if (solo == 0 && R > 1 && Base < 2) {
+            continue;
+          }
+
           Resto = ingressos % R;
 
           cont_r = 0;
@@ -118,10 +126,6 @@ int main() {
             }
           }
 
-          if (solo == 0 && R > 1 && Base < 2) {
-            continue;
-          }
-
           for (s = 0; s < R; s++) {
             // printf("TESTE - grupos[%d] %d\n", s, grupos[s]);
             sucesso = 0;
@@ -131,7 +135,7 @@ int main() {
               base = grupos[s] / r; // quantas pessoas vao ficar em cada grupo por padrao
               resto = grupos[s] % r; // quem sobrou da divisao e precisa de um assento extra
 
-              if (base > 8) {
+              if (base > COL) {
                 continue;
               }
 
@@ -143,9 +147,11 @@ int main() {
               // distribui as pessoas nos subgrupos
               for (i = 0; i < r; i++) {
                 if (i < resto) {
-                  tamanhos[cont_r + i] = base + 1; // os primeiros grupos ganham a sobra
+                  tamanhos[cont_r + i] =
+                      base + 1; // os primeiros grupos ganham a sobra
                 } else {
-                  tamanhos[cont_r + i] = base; // o resto fica com a quantidade base
+                  tamanhos[cont_r + i] =
+                      base; // o resto fica com a quantidade base
                 }
               }
 
@@ -156,19 +162,18 @@ int main() {
                 if (i % 2 == 0) {
                   f1 = (LIN + i) / 2;
                 } else {
-                  f1 = (LIN - 1 - i) / 2;
+                  f1 = (LIN - i) / 2;
                 }
 
                 // desliza pela fileira testando as colunas
                 for (j = 0; j <= COL - tamanhos[cont_r]; j++) {
-                  // for (j = 0; j <= COL - tamanhos[cont_r]; j++) {
                   livres = 0; // conta quantos zeros achou em sequencia
 
                   // analisa sequencias de assentos do centro para fora
                   if (j % 2 == 0) {
                     c1 = (COL + j) / 2 - tamanhos[cont_r] / 2;
                   } else {
-                    c1 = (COL - 1 - j) / 2 - tamanhos[cont_r] / 2;
+                    c1 = (COL - j) / 2 - tamanhos[cont_r] / 2;
                   }
 
                   if (tamanhos[cont_r] == 1) {
@@ -193,7 +198,8 @@ int main() {
                     break;
                   }
 
-                  // printf("canto = %d, j = %d, c1 = %d, tam = %d\n", canto, j, c1, tamanhos[cont_r]);
+                  // printf("canto = %d, j = %d, c1 = %d, tam = %d\n", canto, j,
+                  // c1, tamanhos[cont_r]);
 
                   // verifica os assentos lado a lado pro tamanho do grupo 1
                   for (k = 0; k < tamanhos[cont_r]; k++) {
@@ -202,16 +208,22 @@ int main() {
                     }
                   }
 
-                  // se a quantidade de zeros for igual ao tamanho do grupo 1, achou
-                  // lugar
+                  // se a quantidade de zeros for igual ao tamanho do grupo 1,
+                  // achou lugar
                   if (livres == tamanhos[cont_r]) {
 
                     usada = 0;
                     if (cont_r != 0) {
-                      for (u = 0; u < cont_r + alocados; u++) {
+                      for (u = 0; u < cont_r; u++) {
                         if (f1 == filas[u]) {
-                          if ((c1 >= cols[u] && c1 <= cols[u] + tamanhos[u]) || (cols[u] >= c1 && cols[u] <= c1 + tamanhos[cont_r])) {
+                          if ((c1 >= cols[u] && c1 <= cols[u] + tamanhos[u] - 1) ||
+                              (cols[u] >= c1 && cols[u] <= c1 + tamanhos[cont_r] - 1)) {
                             usada = 1;
+                            break;
+                            // printf("TESTE_INT - f1=%d, filas[u]=%d, c1=%d,
+                            // cols[u]=%d, tam[u]=%d R=%d, r=%d, s=%d,
+                            // sum_tam=%d\n", f1, filas[u], c1, cols[u],
+                            // tamanhos[u], R, r, s, sum_tam);
                           }
                         }
                       }
@@ -222,21 +234,20 @@ int main() {
                       filas[cont_r] = f1; // guarda a linha do grupo 1
                       cols[cont_r] = c1;  // guarda a coluna do grupo 1
                                           // printf("TESTE - c1 = %d\n", c1);
-                      alocados = 1;  // marca que ja guardamos lugar pra 1 subgrupo
+                      alocados = 1; // marca que ja guardamos lugar pra 1 subgrupo
 
-                      // tenta encaixar o resto do pessoal estritamente colado aos que
-                      // ja sentaram
+                      // tenta encaixar o resto do pessoal estritamente colado
+                      // aos que ja sentaram
                       for (g = 1; g < r; g++) {
-                        achou_g = 0; // avisa se achou lugar pra esse subgrupo (g)
-                                     // especifico
+                        achou_g = 0; // avisa se achou lugar pra esse subgrupo
+                                     // (g) especifico
 
-                                     // varre as fileiras que ja fazem parte do grupo
-                                     // for (u = 0; u < alocados; u++) {
+                        // varre as fileiras que ja fazem parte do grupo
+                        // for (u = 0; u < alocados; u++) {
 
-                                     // tenta colar na fileira de tras (+1) ou da frente (-1) dos
-                                     // amigos
-                                     // for (dir = 1; dir >= -1; dir -= 2) {
-                                     // for (d = u; d < r + u - 1; d++) {
+                        // tenta colar na fileira de tras (+1) ou da frente (-1)
+                        // dos amigos for (dir = 1; dir >= -1; dir -= 2) { for
+                        // (d = u; d < r + u - 1; d++) {
                         for (d = 1; d < r; d++) {
                           if (d % 2 == 0) {
                             dir = d / 2;
@@ -246,44 +257,61 @@ int main() {
 
                           f_teste = filas[cont_r] + dir; // calcula a fileira vizinha exata
 
-                          // verifica se a fileira vizinha existe (nao saiu da matriz)
+                          // verifica se a fileira vizinha existe (nao saiu da
+                          // matriz)
                           if (f_teste >= 0 && f_teste < LIN) {
 
-                            // checa se essa fileira ja nao esta sendo usada pelo
-                            // proprio grupo
-                            usada = 0;
-                            for (v = 0; v < cont_r + alocados; v++) {
-                              if (filas[v] == f_teste) {
-                                usada = 1;
-                              }
-                              // printf("filas[%d] = %d | f_teste = %d\n", v, filas[v], f_teste);
-                            }
+                            // checa se essa fileira ja nao esta sendo usada
+                            // pelo proprio grupo
+                            // usada = 0;
+                            // for (v = 0; v < cont_r + alocados; v++) {
+                            //   if (filas[v] == f_teste) {
+                            //     printf("filas[%d] = %d, f_teste = %d, R=%d, r=%d, s=%d\n", v, filas[v], f_teste, R, r, s);
+                            //     usada = 1;
+                            //   }
+                            // }
                             // printf("\n");
 
-                            // se a fileira esta livre pra gente expandir o bloco
-                            if (usada == 0) {
+                            // se a fileira esta livre pra gente expandir o
+                            // bloco
+                            // if (usada == 0) {
 
                               // tenta alinhar a coluna (mesma coluna, puxa pra
                               // direita, puxa pra esquerda)
                               for (offset = 0; offset < 3; offset++) {
                                 switch (offset) {
-                                  case 0:
-                                    c_teste = c1;
-                                    break; // fica embaixo ou em cima
-                                  case 1:
-                                    c_teste = c1 + 1;
-                                    break; // puxa um pro lado
-                                  case 2:
-                                    c_teste = c1 - 1;
-                                    break; // puxa um pro outro
+                                case 0:
+                                  c_teste = c1;
+                                  break; // fica embaixo ou em cima
+                                case 1:
+                                  c_teste = c1 + 1;
+                                  break; // puxa um pro lado
+                                case 2:
+                                  c_teste = c1 - 1;
+                                  break; // puxa um pro outro
                                 }
 
                                 if (canto == 0 && (c_teste + tamanhos[cont_r + g] == COL || c_teste == 0)) {
                                   break;
                                 }
 
-                                // garante que a coluna de teste nao estoure a parede
-                                // da sala
+                                usada = 0;
+                                for (u = 0; u <= cont_r + alocados; u++) {
+                                  if (f_teste == filas[u]) {
+                                    if ((c_teste >= cols[u] && c_teste <= cols[u] + tamanhos[u] - 1) ||
+                                        (cols[u] >= c_teste && cols[u] <= c_teste + tamanhos[cont_r + alocados] - 1)) {
+                                      usada = 1;
+                                      break;
+                                    }
+                                  }
+                                }
+
+                                if (usada == 1) {
+                                  break;
+                                }
+
+                                // garante que a coluna de teste nao estoure a
+                                // parede da sala
                                 if (c_teste >= 0 && c_teste <= COL - tamanhos[cont_r + g]) {
 
                                   livres_vizinho = 0; // conta os zeros da vizinhanca
@@ -305,166 +333,170 @@ int main() {
                                   }
                                 }
                               }
-                            }
+                            // }
                           }
                           if (achou_g == 1) {
                             break; // sai do laco de direcao se ja achou
                           }
                         }
                         //     if (achou_g == 1) {
-                        //         break; // sai do laco de blocos vizinhos se ja achou
+                        //         break; // sai do laco de blocos vizinhos se
+                        //         ja achou
                         //     }
                         // }
                         if (achou_g == 0) {
-                          break; // se nao achou lugar colado pra esse subgrupo, a
-                                 // divisao toda falha
+                          break; // se nao achou lugar colado pra esse subgrupo,
+                                 // a divisao toda falha
                         }
                       }
 
-                      // se a quantidade de grupos colados for a mesma necessária
+                      // se a quantidade de grupos colados for a mesma
+                      // necessária
                       if (alocados == r) {
                         sucesso = 1; // deu tudo certo
                         break;       // para de tentar outras colunas
                       }
-                      }
-                      }
-                    }
-                    if (sucesso == 1) {
-                      break; // para de testar outras linhas pro grupo principal
                     }
                   }
-                  if (sucesso == 1) {
-                    for (i = 0; i < r; i++) {
-                      sum_tam += tamanhos[cont_r + i];
-                    }
-                    printf("TESTE - canto=%d, solo=%d, R=%d, r=%d, sum_tam = %d\n", canto, solo, R, r, sum_tam);
-                    cont_r += r;
-                    break; // para de tentar novas divisoes se a atual ja formou o bloco
-                  }
                 }
-                if (sum_tam == ingressos) {
-                  break;
-                }
-                }
-                if (sum_tam == ingressos) {
-                  break;
+                if (sucesso == 1) {
+                  break; // para de testar outras linhas pro grupo principal
                 }
               }
-              if (sum_tam == ingressos) {
-                break;
+              if (sucesso == 1) {
+                for (i = 0; i < r; i++) {
+                  sum_tam += tamanhos[cont_r + i];
+                }
+                printf("TESTE - canto=%d, solo=%d, R=%d, r=%d, sum_tam = %d\n",
+                       canto, solo, R, r, sum_tam);
+                cont_r += r;
+                break; // para de tentar novas divisoes se a atual ja formou o
+                       // bloco
               }
             }
             if (sum_tam == ingressos) {
               break;
             }
           }
-          printf("\n");
-          for (i = 0; i < cont_r; i++) {
-            printf("Fileira %d, assentos ", filas[i]);
-            for (j = 0; j < tamanhos[i]; j++) {
-              printf("%d ", cols[i] + j);
-            }
-            printf("\n");
+          if (sum_tam == ingressos) {
+            break;
           }
-
-          int alt_print;
-
-          for (i = 0; i < LIN; i++) {
-            printf("%2d | ", i);
-            for (j = 0; j < COL; j++) {
-              alt_print = 0;
-              for (k = 0; k < cont_r; k++) {
-                if (i == filas[k]) {
-                  for (int l = 0; l < tamanhos[k]; l++) {
-                    if (cols[k] + l == j) {
-                      printf("R ");
-                      alt_print = 1;
-                      break;
-                    }
-                  }
-                }
-                if (alt_print == 1) {
-                  break;
-                }
-              }
-              if (alt_print == 0) {
-                printf("%d ", matriz_cinema[i][j]);
-              }
-            }
-            printf("\n");
-          }
-
-          // mostra o resultado final
-          // if (sucesso == 1) {
-          //   printf("grupo dividido em %d subgrupos.\n", R);
-          //   printf("sucesso! lugares reservados em %d fileira(s) colada(s).\n\n", r);
-          //   for (g = 0; g < cont; g++) {
-          //     printf("-> grupo %d (%d pessoas): fila %d, assentos %d a %d\n", g + 1,
-          //            tamanhos[g], filas[g], cols[g], cols[g] + tamanhos[g] - 1);
-          //   }
-          // } else {
-          //   printf("nao foi possivel juntar esse grupo sem separar alguem ou pular "
-          //          "fileiras.\n");
-          // }
-
-          // printf("\nAssentos recomendados:\n");
-          // if (sucesso == 1) {
-          //   printf("\n");
-          //   for (i = 0; i < r; i++) {
-          //     printf("Fileira %d, assentos ", filas[i]);
-          //     for (j = 0; j < tamanhos[i]; j++) {
-          //       printf("%d ", cols[i] + j);
-          //     }
-          //     printf("\n");
-          //   }
-          // } else {
-          //   for (i = 0, k = 0; i < LIN; i++) {
-          //     if (i % 2 == 0) {
-          //       f1 = (LIN + i) / 2;
-          //     } else {
-          //       f1 = (LIN - i - 1) / 2;
-          //     }
-          //     for (j = 0; j < COL; j++) {
-          //       if (j % 2 == 0) {
-          //         c1 = (COL + j) / 2;
-          //       } else {
-          //         c1 = (COL - j - 1) / 2;
-          //       }
-          //
-          //       if (matriz_cinema[f1][c1] == 0) {
-          //         filas[k] = f1;
-          //         cols[k] = c1;
-          //         k++;
-          //       }
-          //
-          //       if (k == ingressos) {
-          //         break;
-          //       }
-          //     }
-          //     if (k == ingressos) {
-          //       break;
-          //     }
-          //   }
-          //
-          //   for (i = 0; i < ingressos - 1; i++) {
-          //     for (j = i + 1; j < ingressos; j++) {
-          //
-          //     }
-          //   }
-          //
-          //   for (i = 0, k = filas[0]; i < ingressos; i++) {
-          //     if (i == 0 || k != filas[i]) {
-          //       k = filas[i];
-          //       printf("\n");
-          //       printf("Fileira %d, assentos ", filas[i]);
-          //     }
-          //     printf("%d ", cols[i]);
-          //   }
-          //   printf("\n");
-          // }
-
-
         }
-
-        return 0;
+        if (sum_tam == ingressos) {
+          break;
+        }
       }
+      if (sum_tam == ingressos) {
+        break;
+      }
+    }
+    printf("\n");
+    for (i = 0; i < cont_r; i++) {
+      printf("Fileira %d, assentos ", filas[i]);
+      for (j = 0; j < tamanhos[i]; j++) {
+        printf("%d ", cols[i] + j);
+      }
+      printf("\n");
+    }
+
+    int alt_print;
+
+    for (i = 0; i < LIN; i++) {
+      printf("%2d | ", i);
+      for (j = 0; j < COL; j++) {
+        alt_print = 0;
+        for (k = 0; k < cont_r; k++) {
+          if (i == filas[k]) {
+            for (int l = 0; l < tamanhos[k]; l++) {
+              if (cols[k] + l == j) {
+                printf("R ");
+                alt_print = 1;
+                break;
+              }
+            }
+          }
+          if (alt_print == 1) {
+            break;
+          }
+        }
+        if (alt_print == 0) {
+          printf("%d ", matriz_cinema[i][j]);
+        }
+      }
+      printf("\n");
+    }
+
+    // mostra o resultado final
+    // if (sucesso == 1) {
+    //   printf("grupo dividido em %d subgrupos.\n", R);
+    //   printf("sucesso! lugares reservados em %d fileira(s) colada(s).\n\n",
+    //   r); for (g = 0; g < cont; g++) {
+    //     printf("-> grupo %d (%d pessoas): fila %d, assentos %d a %d\n", g +
+    //     1,
+    //            tamanhos[g], filas[g], cols[g], cols[g] + tamanhos[g] - 1);
+    //   }
+    // } else {
+    //   printf("nao foi possivel juntar esse grupo sem separar alguem ou pular
+    //   "
+    //          "fileiras.\n");
+    // }
+
+    // printf("\nAssentos recomendados:\n");
+    // if (sucesso == 1) {
+    //   printf("\n");
+    //   for (i = 0; i < r; i++) {
+    //     printf("Fileira %d, assentos ", filas[i]);
+    //     for (j = 0; j < tamanhos[i]; j++) {
+    //       printf("%d ", cols[i] + j);
+    //     }
+    //     printf("\n");
+    //   }
+    // } else {
+    //   for (i = 0, k = 0; i < LIN; i++) {
+    //     if (i % 2 == 0) {
+    //       f1 = (LIN + i) / 2;
+    //     } else {
+    //       f1 = (LIN - i - 1) / 2;
+    //     }
+    //     for (j = 0; j < COL; j++) {
+    //       if (j % 2 == 0) {
+    //         c1 = (COL + j) / 2;
+    //       } else {
+    //         c1 = (COL - j - 1) / 2;
+    //       }
+    //
+    //       if (matriz_cinema[f1][c1] == 0) {
+    //         filas[k] = f1;
+    //         cols[k] = c1;
+    //         k++;
+    //       }
+    //
+    //       if (k == ingressos) {
+    //         break;
+    //       }
+    //     }
+    //     if (k == ingressos) {
+    //       break;
+    //     }
+    //   }
+    //
+    //   for (i = 0; i < ingressos - 1; i++) {
+    //     for (j = i + 1; j < ingressos; j++) {
+    //
+    //     }
+    //   }
+    //
+    //   for (i = 0, k = filas[0]; i < ingressos; i++) {
+    //     if (i == 0 || k != filas[i]) {
+    //       k = filas[i];
+    //       printf("\n");
+    //       printf("Fileira %d, assentos ", filas[i]);
+    //     }
+    //     printf("%d ", cols[i]);
+    //   }
+    //   printf("\n");
+    // }
+  }
+
+  return 0;
+}
