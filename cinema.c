@@ -27,7 +27,6 @@ int main() {
   int usr_idx;
   int login;
   int pwd;
-  int total_usrs = 0;
 
   int fil_max[2];
   int fil_min[2];
@@ -118,7 +117,6 @@ int main() {
 
         usrs[usr_idx] = login;
         pwd = pwds[usr_idx];
-        total_usrs++;
       }
     } else {
       do {
@@ -840,18 +838,15 @@ int main() {
               printf("Assentos recomendados (R):\n");
 
               for (i = 0; i < cont_r; i++) {
-                k = 0;
                 if (i == 0 || filas[i] != filas[i - 1]) {
                   printf("Fileira %d, assentos ", filas[i]);
-                  k = 1;
                 }
+
                 for (j = 0; j < tamanhos[i]; j++) {
                   printf("%d ", cols[i] + j);
                 }
 
-                if (k == 0) {
-                  printf("\n");
-                }
+                printf("\n");
               }
 
               printf("\nDeseja reservar esses assentos?\n"
