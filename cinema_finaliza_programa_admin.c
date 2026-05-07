@@ -862,7 +862,9 @@ int main() {
                   printf("%d ", cols[i] + j);
                 }
 
-                printf("\n");
+                if (i == cont_r - 1 || filas[i] != filas[i + 1]) {
+                  printf("\n");
+                }
               }
 
               printf("\nDeseja reservar esses assentos?\n"
