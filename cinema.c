@@ -20,7 +20,6 @@ int main() {
   int sucesso;
   int final;
 
-  int resrv[LIN][COL] = {0};
   int usrs[TOTAL] = {0};
   int pwds[TOTAL];
   int usr_seats[TOTAL] = {0};
@@ -156,13 +155,18 @@ int main() {
             printf("%2d | ", i);
             for (j = 0; j < COL; j++) {
               alt_print = 1;
+              
 
-              oc_fil += matriz_cinema[i][j];
+              if (matriz_cinema[i][j] != 0) {
+                oc_fil++;
 
-              if (resrv[i][j] == usrs[usr_idx]) {
-                printf("X ");
+                if (matriz_cinema[i][j] == usrs[usr_idx]) {
+                  printf("X ");
+                } else {
+                  printf("1 ");
+                }
               } else {
-                printf("%d ", matriz_cinema[i][j]);
+                printf("0 ");
               }
             }
 
@@ -228,10 +232,14 @@ int main() {
               for (i = 0; i < LIN; i++) {
                 printf("%2d | ", i);
                 for (j = 0; j < COL; j++) {
-                  if (resrv[i][j] == usrs[usr_idx]) {
-                    printf("X ");
+                  if (matriz_cinema[i][j] != 0) {
+                    if (matriz_cinema[i][j] == usrs[usr_idx]) {
+                      printf("X ");
+                    } else {
+                      printf("1 ");
+                    }
                   } else {
-                    printf("%d ", matriz_cinema[i][j]);
+                    printf("0 ");
                   }
                 }
                 printf("\n");
@@ -275,7 +283,7 @@ int main() {
                   }
                 } while (flag == 0 || acao[k][1] < 0 || acao[k][1] >= COL);
 
-                if (matriz_cinema[acao[k][0]][acao[k][1]] == 1) {
+                if (matriz_cinema[acao[k][0]][acao[k][1]] > 0) {
                   printf("Esse assento ja esta ocupado! Tente novamente.\n\n");
                 } else {
                   for (i = 0; i < k; i++) {
@@ -295,9 +303,14 @@ int main() {
 
                     for (i = 0; i < LIN; i++) {
                       printf("%2d | ", i);
+
                       for (j = 0; j < COL; j++) {
-                        if (resrv[i][j] == usrs[usr_idx]) {
-                          printf("X ");
+                        if (matriz_cinema[i][j] != 0) {
+                            if (matriz_cinema[i][j] == usrs[usr_idx]) {
+                              printf("X ");
+                            } else {
+                              printf("1 ");
+                            }
                         } else {
                           alt_print = 1;
                           for (l = 0; l < k; l++) {
@@ -307,8 +320,9 @@ int main() {
                               break;
                             }
                           }
+
                           if (alt_print == 1) {
-                            printf("%d ", matriz_cinema[i][j]);
+                            printf("0 ");
                           }
                         }
                       }
@@ -340,10 +354,8 @@ int main() {
                     switch (opt) {
                       case 1:
                         for (j = 0; j < k; j++) {
-                          resrv[acao[j][0]][acao[j][1]] = usrs[usr_idx];
+                          matriz_cinema[acao[j][0]][acao[j][1]] = usrs[usr_idx];
                           usr_seats[usr_idx]++;
-
-                          matriz_cinema[acao[j][0]][acao[j][1]] = 1;
                         }
                         sucesso = 1;
                         break;
@@ -374,10 +386,14 @@ int main() {
               for (i = 0; i < LIN; i++) {
                 printf("%2d | ", i);
                 for (j = 0; j < COL; j++) {
-                  if (resrv[i][j] == usrs[usr_idx]) {
-                    printf("X ");
+                  if (matriz_cinema[i][j] != 0) {
+                    if (matriz_cinema[i][j] == usrs[usr_idx]) {
+                      printf("X ");
+                    } else {
+                      printf("1 ");
+                    }
                   } else {
-                    printf("%d ", matriz_cinema[i][j]);
+                    printf("0 ");
                   }
                 }
                 printf("\n");
@@ -428,7 +444,7 @@ int main() {
 
                   }
 
-                  if (erro == 1 && resrv[acao[k][0]][acao[k][1]] == usrs[usr_idx]) {
+                  if (erro == 1 && matriz_cinema[acao[k][0]][acao[k][1]] == usrs[usr_idx]) {
                     k++;
                     erro = 0;
                   }
@@ -454,10 +470,14 @@ int main() {
                           }
                         }
                         if (alt_print == 1) {
-                          if (resrv[i][j] == usrs[usr_idx]) {
-                            printf("X ");
+                          if (matriz_cinema[i][j] != 0) {
+                            if (matriz_cinema[i][j] == usrs[usr_idx]) {
+                              printf("X ");
+                            } else {
+                              printf("1 ");
+                            }
                           } else {
-                            printf("%d ", matriz_cinema[i][j]);
+                            printf("0 ");
                           }
                         }
                       }
@@ -489,10 +509,9 @@ int main() {
                     switch (opt) {
                       case 1:
                         for (j = 0; j < k; j++) {
-                          if (resrv[acao[j][0]][acao[j][1]] == usrs[usr_idx]) {
-                            matriz_cinema[acao[j][0]][acao[j][1]] = 0;
+                          if (matriz_cinema[acao[j][0]][acao[j][1]] == usrs[usr_idx]) {
 
-                            resrv[acao[j][0]][acao[j][1]] = 0;
+                            matriz_cinema[acao[j][0]][acao[j][1]] = 0;
 
                             usr_seats[usr_idx]--;
                           }
@@ -520,10 +539,14 @@ int main() {
               for (i = 0; i < LIN; i++) {
                 printf("%2d | ", i);
                 for (j = 0; j < COL; j++) {
-                  if (resrv[i][j] == usrs[usr_idx]) {
-                    printf("X ");
+                  if (matriz_cinema[i][j] != 0) {
+                    if (matriz_cinema[i][j] == usrs[usr_idx]) {
+                      printf("X ");
+                    } else {
+                      printf("1 ");
+                    }
                   } else {
-                    printf("%d ", matriz_cinema[i][j]);
+                    printf("0 ");
                   }
                 }
                 printf("\n");
@@ -621,12 +644,16 @@ int main() {
                             if (tamanhos[cont_r] == 1) {
                               k = 0;
                               if (c1 < COL - 1) {
-                                k += matriz_cinema[f1][c1 + 1];
+                                if (matriz_cinema[f1][c1 + 1] != 0) {
+                                  k++;
+                                }
                               } else {
                                 k++;
                               }
                               if (c1 > 0) {
-                                k += matriz_cinema[f1][c1 - 1];
+                                if (matriz_cinema[f1][c1 - 1] != 0) {
+                                  k++;
+                                }
                               } else {
                                 k++;
                               }
@@ -720,6 +747,7 @@ int main() {
                                             if (matriz_cinema[f_teste][c_teste + k] == 0) {
                                               livres_vizinho++;
                                             }
+
                                           }
 
                                           if (livres_vizinho == tamanhos[cont_r + g]) {
@@ -802,11 +830,15 @@ int main() {
               for (i = 0; i < LIN; i++) {
                 printf("%2d | ", i);
                 for (j = 0; j < COL; j++) {
-                  alt_print = 1;
-                  if (resrv[i][j] == usrs[usr_idx]) {
-                    printf("X ");
-                    alt_print = 0;
+                  if (matriz_cinema[i][j] != 0) {
+                    if (matriz_cinema[i][j] == usrs[usr_idx]) {
+                      printf("X ");
+                    } else {
+                      printf("1 ");
+                    }
                   } else {
+                    alt_print = 1;
+
                     for (k = 0; k < cont_r; k++) {
                       if (filas[k] == i) {
                         for (l = 0; l < tamanhos[k]; l++) {
@@ -817,12 +849,14 @@ int main() {
                           }
                         }
                       }
+
                       if (alt_print == 0) {
                         break;
                       }
                     }
+
                     if (alt_print == 1) {
-                      printf("%d ", matriz_cinema[i][j]);
+                      printf("0 ");
                     }
                   }
                 }
@@ -868,10 +902,9 @@ int main() {
               if (opt == 1) {
                 for (i = 0; i < cont_r; i++) {
                   for (j = 0; j < tamanhos[i]; j++) {
-                    resrv[filas[i]][cols[i] + j] = usrs[usr_idx];
+                    matriz_cinema[filas[i]][cols[i] + j] = usrs[usr_idx];
                     usr_seats[usr_idx]++;
 
-                    matriz_cinema[filas[i]][cols[i] + j] = 1;
                   }
                 }
               }
@@ -886,10 +919,14 @@ int main() {
               for (i = 0; i < LIN; i++) {
                 printf("%2d | ", i);
                 for (j = 0; j < COL; j++) {
-                  if (resrv[i][j] == usrs[usr_idx]) {
-                    printf("X ");
+                  if (matriz_cinema[i][j] != 0) {
+                    if (matriz_cinema[i][j] == usrs[usr_idx]) {
+                      printf("X ");
+                    } else {
+                      printf("1 ");
+                    }
                   } else {
-                    printf("%d ", matriz_cinema[i][j]);
+                    printf("0 ");
                   }
                 }
                 printf("\n");
