@@ -102,7 +102,8 @@ int main() {
         }
       }
 
-      if (i == TOTAL - 1 && usrs[i] != 0) {
+      if ((total_oc == TOTAL && usrs[usr_idx] == 0) || (usr_idx == TOTAL)) {
+        system("cls");
         printf("A sala esta cheia.\n");
         erro = 1;
       }
@@ -203,7 +204,6 @@ int main() {
               "X: Seus assentos\n"
               "1: Assentos ocupados\n"
               "0: Assentos livres\n\n");
-
 
           printf("Opcoes:\n"
               "1. Comprar ingresso\n"
@@ -976,7 +976,29 @@ int main() {
               break;
 
             case 5:
-              final = 1;
+              if (usr_seats[usr_idx] == 0) {
+                system("cls");
+                printf(
+                  "Voce nao reservou assentos. Se sair, sua conta sera apagada.\n\n"
+                  "Deseja mesmo sair?\n"
+                  "1. Sim\n"
+                  "2. Nao\n\n"
+                );
+
+                do {
+                  printf("Opcao: ");
+                  flag = scanf("%d", &opt);
+                  limparBuffer();
+
+                  if (opt < 1 || opt > 2) {
+                    printf("Opcao fora dos limites.\n");
+                  }
+                } while (flag == 0 || opt < 1 || opt > 2);
+              }
+
+              if (opt == 1) {
+                final = 1;
+              }
               break;
             default:
               break;
