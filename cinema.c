@@ -33,7 +33,7 @@ int main() {
   int fil_crit[LIN];
   int rest_liv_crit[LIN];
   int total_liv;
-  int total_oc;
+  int total_oc = 0;
   int total_fil_liv;
   int total_fil_crit;
   int oc_fil;
