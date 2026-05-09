@@ -225,6 +225,13 @@ int main() {
           switch (opt) {
             case 1:
               system("cls");
+
+              if (total_oc == TOTAL) {
+                printf("Desculpe, a sessao esta cheia.\n\n");
+                system("pause");
+                break;
+              }
+
               printf("Usuario: %d\n\n", usrs[usr_idx]);
               printf("     |    TELA     |\n"
                   "     ---------------\n");
@@ -251,40 +258,54 @@ int main() {
               }
               printf("\n\n");
 
-              sucesso = 0;
+              erro = 0;
               k = 0;
-              while (sucesso == 0) {
-                if (total_oc == TOTAL) {
-                  printf("Desculpe, a sessao esta cheia.\n\n");
-                  system("pause");
-                  break;
-                }
 
+              do {
+                printf("Digite a quantidade de ingressos desejados: ");
+                flag = scanf("%d", &ingressos);
+
+                if (ingressos < 0 || ingressos > total_liv) {
+                  if (total_liv == 1) {
+                    printf("Quantidade invalida. A sala tem 1 assento livre.\n\n");
+                  } else {
+                    printf("Quantidade invalida. A sala tem %d assentos livres.\n\n", total_liv);
+                  }
+                }
+              } while (flag == 0 || ingressos < 0 || ingressos > total_liv);
+
+              if (ingressos == 0) {
+                break;
+              }
+
+              printf("\n");
+
+              while (k < ingressos) {
                 erro = 0;
-                printf("Comprar:\n");
 
                 do {
-                  printf("  Fileira: ");
+                  printf("Fileira: ");
                   flag = scanf("%d", &acao[k][0]);
                   limparBuffer();
 
                   if (acao[k][0] < 0 || acao[k][0] >= LIN) {
-                    printf("Fileira fora dos limites. Tente novamente.\n");
+                    printf("Fileira fora dos limites. Tente novamente.\n\n");
                   }
                 } while (flag == 0 || acao[k][0] < 0 || acao[k][0] >= LIN);
 
                 do {
-                  printf("  Assento: ");
+                  printf("Assento: ");
                   flag = scanf("%d", &acao[k][1]);
                   limparBuffer();
 
                   if (acao[k][1] < 0 || acao[k][1] >= COL) {
-                    printf("Assento fora dos limites. Tente novamente.\n");
+                    printf("Assento fora dos limites. Tente novamente.\n\n");
                   }
                 } while (flag == 0 || acao[k][1] < 0 || acao[k][1] >= COL);
 
-                if (matriz_cinema[acao[k][0]][acao[k][1]] > 0) {
+                if (matriz_cinema[acao[k][0]][acao[k][1]] != 0) {
                   printf("Esse assento ja esta ocupado! Tente novamente.\n\n");
+                  erro = 1;
                 } else {
                   for (i = 0; i < k; i++) {
                     if (acao[i][0] == acao[k][0] && acao[i][1] == acao[k][1]) {
@@ -293,81 +314,75 @@ int main() {
                       break;
                     }
                   }
-                  if (erro == 0) {
-                    k++;
-
-                    system("cls");
-                    printf("Usuario: %d\n\n", usrs[usr_idx]);
-                    printf("     |    TELA     |\n"
-                        "     ---------------\n");
-
-                    for (i = 0; i < LIN; i++) {
-                      printf("%2d | ", i);
-
-                      for (j = 0; j < COL; j++) {
-                        if (matriz_cinema[i][j] != 0) {
-                            if (matriz_cinema[i][j] == usrs[usr_idx]) {
-                              printf("X ");
-                            } else {
-                              printf("1 ");
-                            }
-                        } else {
-                          alt_print = 1;
-                          for (l = 0; l < k; l++) {
-                            if (acao[l][0] == i && acao[l][1] == j) {
-                              printf("C ");
-                              alt_print = 0;
-                              break;
-                            }
-                          }
-
-                          if (alt_print == 1) {
-                            printf("0 ");
-                          }
-                        }
-                      }
-                      printf("\n");
-                    }
-                    printf("     ---------------\n");
-                    printf("     ");
-                    for (i = 0; i < COL; i++) {
-                      printf("%d ", i);
-                    }
-                    printf("\n\n");
-                    printf("C: Assentos a serem comprados\n\n");
-
-                    printf("Finalizar compra?\n"
-                        "1. Sim\n"
-                        "2. Nao\n"
-                        "3. Excluir compra\n\n");
-
-                    do {
-                      printf("Opcao: ");
-                      flag = scanf("%d", &opt);
-                      limparBuffer();
-
-                      if (opt < 1 || opt > 3) {
-                        printf("Opcao fora dos limites.\n");
-                      }
-                    } while (flag == 0 || opt < 1 || opt > 3);
-
-                    switch (opt) {
-                      case 1:
-                        for (j = 0; j < k; j++) {
-                          matriz_cinema[acao[j][0]][acao[j][1]] = usrs[usr_idx];
-                          usr_seats[usr_idx]++;
-                        }
-                        sucesso = 1;
-                        break;
-                      case 2:
-                        break;
-                      case 3:
-                      default:
-                        sucesso = 1;
-                    }
-                  }
-                  printf("\n");
                 }
+
+                if (erro == 0) {
+                  k++;
+                  system("cls");
+                  printf("Usuario: %d\n\n", usrs[usr_idx]);
+                  printf("     |    TELA     |\n"
+                      "     ---------------\n");
+
+                  for (i = 0; i < LIN; i++) {
+                    printf("%2d | ", i);
+
+                    for (j = 0; j < COL; j++) {
+                      if (matriz_cinema[i][j] != 0) {
+                        if (matriz_cinema[i][j] == usrs[usr_idx]) {
+                          printf("X ");
+                        } else {
+                          printf("1 ");
+                        }
+                      } else {
+                        alt_print = 1;
+                        for (l = 0; l < k; l++) {
+                          if (acao[l][0] == i && acao[l][1] == j) {
+                            printf("C ");
+                            alt_print = 0;
+                            break;
+                          }
+                        }
+
+                        if (alt_print == 1) {
+                          printf("0 ");
+                        }
+                      }
+                    }
+                    printf("\n");
+                  }
+                  printf("     ---------------\n");
+                  printf("     ");
+                  for (i = 0; i < COL; i++) {
+                    printf("%d ", i);
+                  }
+                  printf("\n\n");
+                  printf("C: Assentos a serem comprados (%d/%d)\n\n", k, ingressos);
+                }
+              }
+
+              printf("Finalizar?\n"
+                     "1. Confirmar compra\n"
+                     "2. Excluir compra\n\n");
+
+              do {
+                printf("Opcao: ");
+                flag = scanf("%d", &opt);
+                limparBuffer();
+
+                if (opt < 1 || opt > 2) {
+                  printf("Opcao fora dos limites.\n");
+                }
+              } while (flag == 0 || opt < 1 || opt > 2);
+
+              switch (opt) {
+                case 1:
+                  for (j = 0; j < k; j++) {
+                    matriz_cinema[acao[j][0]][acao[j][1]] = usrs[usr_idx];
+                    usr_seats[usr_idx]++;
+                  }
+                  break;
+                case 2:
+                  break;
               }
               break;
             case 2:
@@ -405,13 +420,29 @@ int main() {
               }
               printf("\n\n");
 
-              sucesso = 0;
-              k = 0;
-              while (sucesso == 0) {
-                printf("Cancelar:\n");
+              do {
+                printf("Digite a quantidade de cancelamentos desejados: ");
+                flag = scanf("%d", &ingressos);
 
+                if (ingressos < 0 || ingressos > usr_seats[usr_idx]) {
+                  if (usr_seats[usr_idx] == 1) {
+                    printf("Quantidade invalida. Voce tem 1 assento reservado.\n\n");
+                  } else {
+                    printf("Quantidade invalida. Voce tem %d assentos reservados.\n\n", usr_seats[usr_idx]);
+                  }
+                }
+              } while (flag == 0 || ingressos < 0 || ingressos > usr_seats[usr_idx]);
+
+              if (ingressos == 0) {
+                break;
+              }
+
+              printf("\n");
+
+              k = 0;
+              while (k < ingressos) {
                 do {
-                  printf("  Fileira: ");
+                  printf("Fileira: ");
                   flag = scanf("%d", &acao[k][0]);
                   limparBuffer();
 
@@ -421,17 +452,17 @@ int main() {
                 } while (flag == 0 || acao[k][0] < 0 || acao[k][0] >= LIN);
 
                 do {
-                  printf("  Assento: ");
+                  printf("Assento: ");
                   flag = scanf("%d", &acao[k][1]);
                   limparBuffer();
 
                   if (acao[k][1] < 0 || acao[k][1] >= COL) {
-                    printf("Assento fora dos limites. Tente novamente.\n");
+                    printf("Assento fora dos limites. Tente novamente.\n\n");
                   }
                 } while (flag == 0 || acao[k][1] < 0 || acao[k][1] >= COL);
 
                 if (matriz_cinema[acao[k][0]][acao[k][1]] == 0) {
-                  printf("Esse assento ja esta livre. Tente novamente.\n");
+                  printf("Esse assento ja esta livre. Tente novamente.\n\n");
                 } else {
                   erro = 1;
 
@@ -450,9 +481,8 @@ int main() {
                   }
 
                   if (erro == 1) {
-                    printf("Esse assento foi reservado por outro usuario. Tente novamente.\n");
+                    printf("Esse assento foi reservado por outro usuario. Tente novamente.\n\n");
                   } else {
-
                     system("cls");
                     printf("Usuario: %d\n\n", usrs[usr_idx]);
                     printf("     |    TELA     |\n"
@@ -489,45 +519,38 @@ int main() {
                       printf("%d ", i);
                     }
                     printf("\n\n");
-                    printf("E: Assentos a serem cancelados\n\n");
-
-                    printf("Finalizar cancelamento?\n"
-                        "1. Sim\n"
-                        "2. Nao\n"
-                        "3. Excluir cancelamento\n\n");
-
-                    do {
-                      printf("Opcao: ");
-                      flag = scanf("%d", &opt);
-                      limparBuffer();
-
-                      if (opt < 1 || opt > 3) {
-                        printf("Opcao fora dos limites.\n");
-                      }
-                    } while (flag == 0 || opt < 1 || opt > 3);
-
-                    switch (opt) {
-                      case 1:
-                        for (j = 0; j < k; j++) {
-                          if (matriz_cinema[acao[j][0]][acao[j][1]] == usrs[usr_idx]) {
-
-                            matriz_cinema[acao[j][0]][acao[j][1]] = 0;
-
-                            usr_seats[usr_idx]--;
-                          }
-                        }
-                        sucesso = 1;
-                        break;
-                      case 2:
-                        break;
-                      case 3:
-                      default:
-                        sucesso = 1;
-                        break;
-                    }
+                    printf("E: Assentos a serem cancelados (%d/%d)\n\n", k, ingressos);
                   }
                 }
-                printf("\n");
+              }
+
+              printf("Finalizar?\n"
+                  "1. Confirmar cancelamento\n"
+                  "2. Excluir cancelamento\n\n");
+
+              do {
+                printf("Opcao: ");
+                flag = scanf("%d", &opt);
+                limparBuffer();
+
+                if (opt < 1 || opt > 2) {
+                  printf("Opcao fora dos limites.\n");
+                }
+              } while (flag == 0 || opt < 1 || opt > 2);
+
+              switch (opt) {
+                case 1:
+                  for (j = 0; j < k; j++) {
+                    if (matriz_cinema[acao[j][0]][acao[j][1]] == usrs[usr_idx]) {
+
+                      matriz_cinema[acao[j][0]][acao[j][1]] = 0;
+
+                      usr_seats[usr_idx]--;
+                    }
+                  }
+                  break;
+                case 2:
+                  break;
               }
               break;
             case 3:
@@ -979,7 +1002,7 @@ int main() {
               if (usr_seats[usr_idx] == 0) {
                 system("cls");
                 printf(
-                  "Voce nao reservou assentos. Se sair, sua conta sera apagada.\n\n"
+                  "Voce nao reservou assentos. Se sair, seu cadastro sera excluido.\n\n"
                   "Deseja mesmo sair?\n"
                   "1. Sim\n"
                   "2. Nao\n\n"
@@ -994,11 +1017,14 @@ int main() {
                     printf("Opcao fora dos limites.\n");
                   }
                 } while (flag == 0 || opt < 1 || opt > 2);
-              }
 
-              if (opt == 1) {
+                if (opt == 1) {
+                  final = 1;
+                }
+              } else {
                 final = 1;
               }
+
               break;
             default:
               break;
